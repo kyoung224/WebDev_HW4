@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <title> HW 4 Part B </title>
+    <link rel = "stylesheet" href = "style.css">
+
+    <script>
+      var size;
+      var difficulty = 0;
+
+      var arr = [];
+      var box_val = [];
+      var box_num = [];
+      var box1;
+      var box2;
+
+      var matched = 0;
+      var card_holder = '';
+
+      var time_left = 0;
+      var memorize_time = 0;
+
+      var reveal_board = true;
+      var reveal_preview = true;
+      var start = false;
+
+      function boardSize() {
+        size = prompt("The goal of this game is for you to memorize the places of each picture and match them with their pairs by clicking on them. \n \n Please Enter the size of game of either 8, 10, or 12. \n Size 8 will have time limit of 120 seconds, size 10 will have time limit of 150 seconds, and size 12 will have time limit of 180 seconds.");
+        difficulty = prompt("The goal of this game is for you to memorize the places of each picture and match them with their pairs by clicking on them. \n \n Please Enter the difficulty of game of either 1, 2, or 3. \n Difficulty 1 will give you 8 seconds to memorize while difficulty 2 will give you 5 seconds, and difficulty 3 will give you 3 seconds.");
+        if(size == 8 || size == 10 || size == 12) {
+          if (difficulty == 1 || difficulty == 2 || difficulty == 3){
+            time_left = size * 15;
+            if (difficulty == 1){
+              memorize_time = 8;
+            } else if (difficulty == 2){
+              memorize_time = 5;
+            } else{
+              memorize_time = 3;
+            }
+          } else{
+            alert("Please enter the correct value");
+            boardSize();
+          }
+        } else{
+          alert("Please enter the correct value");
+          boardSize();
+        }
+      }
+
+      function shuffle(arr){
+        var currentIndex = arr.length, temp, randomIndex;
+
+        while (currentIndex !== 0){
+          randomIndex = Math.floor(Math.random() * currentIndex);
+          currentIndex -= 1;
+          temp = arr[currentIndex];
+          arr[currentIndex] = arr[randomIndex];
+          arr[randomIndex] = temp;
+        }
+        return arr;
+      }
+
+      function startGame(){
+        start = true;
+      }
+
+      function rule() {
+        var i = document.getElementById("rule");
+        if (i.style.display === "none") {
+          i.style.display = "block";
+        } else {
+          i.style.display = "none";
+        }
+      }
+
+      function makeBoardPreview(arr) {
+         for(var i = 0; i < arr.length; i++){
+           card_holder += '<div id = "frontCard">' + arr[i] + '</div>';
+         }
+         document.getElementById('board').innerHTML = card_holder;
+      }
+
+      function makeBoard(arr) {
+        for(var i = 0; i < arr.length; i++){
+           card_holder += '<div id="box' + i + '" onclick="flip(this,\'' + arr[i] + '\')"></div>';
+
+         }
+         document.getElementById('board').innerHTML = card_holder;
+      }
+
+      function flip(box, val){
+        if (reveal_board == false){
+          if(box.innerHTML == "" && box_val.length < 2){
+            box.style.background = '#add8e6';
+            box.innerHTML = val;
+            if(box_val.length == 0){
+              box_val.push(val);
+              box_num.push(box.id);
+            } else if(box_val.length == 1){
+              box_val.push(val);
+              box_num.push(box.id);
+              if(box_val[0] == box_val[1]){
+                matched += 2;
+                box_val = [];
+                box_num = [];
+                if(matched == arr.length){
+                  alert("Congratulations! You finished in " + (size * 15 - time_left) + " seconds! \nThe game will now reset.");
+                  document.getElementById('board').innerHTML = "";
+                  location.reload();
+                }
+              } else {
+                setTimeout(flipBack, 500);
+              }
+            }
+          }
+        }
+      }
+
+
+        function flipBack(){
+          box1 = document.getElementById(box_num[0]);
+          box2 = document.getElementById(box_num[1]);
+          box1.style.background = 'url(./cardBack.png) no-repeat';
+          box1.innerHTML = "";
+          box2.style.background = 'url(./cardBack.png) no-repeat';
+          box2.innerHTML = "";
+          box_val = [];
+          box_num = [];
+        }
+
+      </script>
+
+    </head>
+
+    <body>
+      <h1> Welcome to the Memory Card Matching Game! </h1>
+      <h2> Memorizing Time: <span id = "memorizingTime"> </span><h2>
+      <h2> Time Remaining: <span id="timeLimit"></span></h2>
+
+      <script>
+        boardSize();
+
+	      for(var i = 0; i < size; i++) {
+          arr.push(i);
+          arr.push(i);
+        }
+        shuffle(arr);
+
+        var memorizeTimer = setInterval(function() {
+          if (start == true){
+            if (memorize_time <= 0){
+              clearInterval(memorize_time);
+              document.getElementById("memorizingTime").innerHTML = "Memorizing Time has Ended";
+              document.getElementById("board").innerHTML = "";
+              card_holder = '';
+              reveal_board = false;
+              makeBoard(arr);
+            } else{
+              document.getElementById("memorizingTime").innerHTML = memorize_time + " seconds";
+              if (reveal_preview == true){
+                makeBoardPreview(arr);
+                reveal_preview = false;
+              }
+            }
+            memorize_time--;
+          }
+        }, 1000);
+
+        var timer = setInterval(function() {
+          if (reveal_board == false){
+            clearInterval(memorizeTimer);
+
+            if(time_left <= 0) {
+              clearInterval(timer);
+              alert("Time Over! \nThe game will now reset.");
+              document.getElementById("timeLimit").innerHTML = "Time Over!";
+              location.reload();
+            } else {
+            document.getElementById("timeLimit").innerHTML = time_left + " seconds";
+            }
+            time_left--;
+          }
+        }, 1000);
+
+      </script>
+
+      <input type = "submit" value = "Start!" onclick = "startGame()">
+      <input type = "submit" value = "Rule" onclick = "rule()">
+      <br>
+
+      <div id = "rule" style = "display: none">
+        <br>
+        The goal of this game is for you to memorize the places of each picture and match them with their pairs by clicking on them. <br> <br>
+        Size 8 will have time limit of 120 seconds, size 10 will have time limit of 150 seconds, and size 12 will have time limit of 180 seconds. <br>
+        Difficulty 1 will give you 8 seconds to memorize the locations, whereas difficulty 2 will give you 5 seconds, and difficulty 3 will give you 3 seconds. <br>
+        After the pair of cards are chosen and if they are not a pair, you will be able to continue matching card once all the cards have been flipped back so they show their back side.<br> <br>
+        Please press Start! button to play! <br> <br>
+        Click on the Rule button once more to hide the rules <br>
+      </div>
+
+      <div id="board"></div>
+      <br>
+
+      <a href = "A.html"> Go to Part A </a>
+
+    </body>
+
+</html>
