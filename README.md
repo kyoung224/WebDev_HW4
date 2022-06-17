@@ -2,12 +2,6 @@
 
 ## Directions
 
-### A
-Using JavaScript, ask user input for number of hours worked by employees.
-Having a fixed rate of $15 per hour, calculate the total amount each employee earned and display the number of employees, their hours, and total pay accepted by the user input as well as the total pay of all the employees together.
-By entering a negative number, users will be able to indicate the end of the input.
-
-### B
 Using JavaScript, ask user input for 
 
 The goal of this game is for the users to memorize the places of each picture and match them with their pairs by clicking on them.
