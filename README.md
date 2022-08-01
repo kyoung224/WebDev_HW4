@@ -2,8 +2,6 @@
 
 ## Directions
 
-Using JavaScript, ask user input for 
-
 The goal of this game is for the users to memorize the places of each picture and match them with their pairs by clicking on them.
 Using JavaScript, ask users to input the size of game of either 8, 10, or 12.
 Size 8 will have time limit of 120 seconds, size 10 will have time limit of 150 seconds, and size 12 will have time limit of 180 seconds for users to memorize the cards.
